@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tape tests/**/*.js",
-    "start": "node index.js"
+    "tape": "tape tests/**/*.js;kill-port 3000",
+    "start": "node index.js",
+    "test": "concurrently -s last 'npm:start' 'npm:tape'"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,9 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "node-fetch": "^2.6.0",
-    "tape": "^4.11.0"
+    "concurrently": "^4.1.1",
+    "kill-port": "^1.5.1",
+    "tape": "^4.11.0",
+    "xyquest": "^2.1.1"
   }
 }
