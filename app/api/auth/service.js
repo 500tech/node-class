@@ -1,16 +1,26 @@
 const uuid = require("uuid");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const db = require("../../db");
+const { jwtSecret, jwtExpires = "60d" } = require("../../../env");
 
 const COLLECTION = "users";
+
+function createToken(user) {
+  return jwt.sign(user, jwtSecret, { expiresIn: jwtExpires });
+}
+
+function validateUserToken(token) {
+  return jwt.verify(token, jwtSecret);
+}
 
 function hashPassword(password) {
   const hash = bcrypt.hashSync(password, 10);
   return hash;
 }
 
-function getUser({ email, password }) {
-  return db
+function getUserToken({ email, password }) {
+  const user = db
     .get(COLLECTION)
     .find(
       user =>
@@ -18,6 +28,9 @@ function getUser({ email, password }) {
         bcrypt.compareSync(password, user.hashedPassword)
     )
     .value();
+  if (user) {
+    return createToken(user);
+  }
 }
 
 function createUser({ email, password }) {
@@ -28,4 +41,4 @@ function createUser({ email, password }) {
     .write();
 }
 
-module.exports = { createUser, getUser };
+module.exports = { createUser, getUserToken, validateUserToken };
