@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "tape": "tape tests/**/*.js;kill-port 3000",
+    "test-app": "node index.js | shusher",
     "start": "node index.js",
-    "test": "concurrently -s last 'npm:start' 'npm:tape'"
+    "test": "concurrently -s last 'npm:test-app' 'npm:tape'"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "concurrently": "^4.1.1",
     "kill-port": "^1.5.1",
+    "shusher": "^0.1.1",
     "tape": "^4.11.0",
     "xyquest": "^2.1.1"
   }
