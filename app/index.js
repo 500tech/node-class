@@ -1,9 +1,14 @@
 const express = require("express");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
 
 const app = express();
-app.use((req, res, next) => {
-  console.log('This is a request!');
-  next();
+app.use(morgan("combined"));
+app.use(bodyParser.json());
+
+app.post("/", (req, res) => {
+  const payload = req.body;
+  return res.json(payload);
 });
 
 app.get("/", (_req, res) => {

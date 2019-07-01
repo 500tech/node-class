@@ -9,9 +9,18 @@ test("Async test", async t => {
   t.equal(1 + 1, 2);
 });
 
-test("Index test", async t => {
+test("Index test [GET]", async t => {
   const value = await app.get();
   t.deepEqual(value, {
     message: "Hello, world"
+  });
+});
+
+test("Index test [POST]", async t => {
+  const payload = await app.post({
+    userId: 3
+  });
+  t.deepEqual(payload, {
+    userId: 3
   });
 });
