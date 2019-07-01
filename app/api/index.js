@@ -13,4 +13,6 @@ api.get("/", (_req, res) => {
   });
 });
 
+api.use('/posts', require('./posts'));
+
 module.exports = api;

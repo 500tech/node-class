@@ -27,6 +27,8 @@ const test = (title, cb) =>
     await porter.waitForPort();
     try {
       await cb(t);
+    } catch (err) {
+      t.fail(err);
     } finally {
       t.end();
     }
