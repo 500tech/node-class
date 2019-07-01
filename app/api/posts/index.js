@@ -1,12 +1,24 @@
+const { check } = require("express-validator");
 const { Router } = require("express");
+const { NOT_FOUND } = require("http-status-codes");
 const { findPostById, getAllPosts, createPost } = require("./service");
+const validate = require("../../middleware/validate");
 
 const posts = Router();
 
-posts.post("/", (req, res) => {
-  const post = createPost(req.body);
-  return res.json(post);
-});
+posts.post(
+  "/",
+  validate([
+    check("title")
+      .isString()
+      .isLength({ min: 1 }),
+    check("body").isString()
+  ]),
+  (req, res) => {
+    const post = createPost(req.body);
+    return res.json(post);
+  }
+);
 
 posts.get("/", (_res, res) => res.json(getAllPosts()));
 
@@ -14,7 +26,7 @@ posts.get("/:postId", (req, res) => {
   const { postId } = req.params;
   const post = findPostById(postId);
   if (!post) {
-    return res.status(404).json({ error: "Post not found" });
+    throw NOT_FOUND;
   }
   return res.json(post);
 });

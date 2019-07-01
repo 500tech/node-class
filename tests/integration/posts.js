@@ -10,7 +10,18 @@ test("Create a new post", async t => {
   t.ok(typeof post.$id === "string");
 });
 
-test('Get post by id', async t => {
+test("Create an invalid post", async t => {
+  try {
+    await app.api.posts.post({
+      body: "Foo bar"
+    });
+    t.fail();
+  } catch (err) {
+    t.equals(err.code, 422);
+  }
+});
+
+test("Get post by id", async t => {
   const { $id } = await app.api.posts.post({
     title: "Lorem Ipsum",
     body: "Foo bar"
@@ -19,4 +30,12 @@ test('Get post by id', async t => {
   t.equal(post.title, "Lorem Ipsum");
   t.equal(post.body, "Foo bar");
   t.ok(typeof post.$id === "string");
-})
+});
+
+test("Get non existent post by id", async t => {
+  try {
+    await app.api.posts.nope.get();
+  } catch (err) {
+    t.equals(err.code, 404);
+  }
+});
