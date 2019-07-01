@@ -4,11 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tape": "tape tests/**/*.js;kill-port 4000",
-    "test-app": "node index.js | shusher",
+    "tape-integration": "rimraf db.test.json && tape tests/integration/**/*.js;fkill -s :4000",
+    "test-unit": "nyc --silent tape tests/unit/**/*.js",
+    "test-app": "node index.js || exit 0",
+    "start-test": "nyc --no-clean --silent npm run test-app",
     "start": "cross-env NODE_ENV=dev nodemon index.js",
     "start-prod": "cross-env NODE_ENV=production node index.js",
-    "test": "cross-env NODE_ENV=test concurrently -s last 'npm:test-app' 'npm:tape'"
+    "test-integration": "cross-env NODE_ENV=test concurrently 'npm:start-test' 'npm:tape-integration'",
+    "test-all": "npm run test-unit && npm run test-integration",
+    "test": "npm run test-all && nyc report"
   },
   "repository": {
     "type": "git",
@@ -25,20 +29,27 @@
     "cross-env": "^5.2.0",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
+    "fkill-cli": "^5.2.0",
     "lodash": "^4.17.11",
     "lowdb": "^1.0.0",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.1",
+    "proxyquire": "^2.1.0",
     "pug": "^2.0.4",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "concurrently": "^4.1.1",
     "detect-port": "^1.3.0",
-    "kill-port": "^1.5.1",
-    "shusher": "^0.1.1",
+    "nyc": "^14.1.1",
+    "rimraf": "^2.6.3",
     "sleep-promise": "^8.0.1",
     "tape": "^4.11.0",
     "xyquest": "^2.1.1"
+  },
+  "nyc": {
+    "exclude": [
+      "tests/**/*.js"
+    ]
   }
 }

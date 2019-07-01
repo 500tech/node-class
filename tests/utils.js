@@ -16,15 +16,17 @@ const porter = {
     const { port, portWaitInterval } = env;
     if ((await detect(+port)) === +port) {
       await sleep(+portWaitInterval);
-      await waitForPort();
+      await this.waitForPort();
     }
     this.isUp = true;
   }
 };
 
-const test = (title, cb) =>
+const test = (title, cb, unit = false) =>
   _test(title, async t => {
-    await porter.waitForPort();
+    if (!unit) {
+      await porter.waitForPort();
+    }
     try {
       await cb(t);
     } catch (err) {
@@ -34,4 +36,6 @@ const test = (title, cb) =>
     }
   });
 
-module.exports = { test, app };
+const unit = (...args) => test(...args, true);
+
+module.exports = { test, app, unit };
