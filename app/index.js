@@ -1,9 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
+const env = require("../env");
 
 const app = express();
 app.set("view engine", "pug");
-app.use(morgan("combined"));
+if (env.logger) {
+  app.use(morgan(env.logger));
+}
 app.use(express.json());
 
 app.post("/", (req, res) => {

@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "tape": "tape tests/**/*.js;kill-port 3000",
-    "test-app": "node index.js | shusher",
-    "start": "node index.js",
+    "test-app": "cross-env NODE_ENV=test node index.js | shusher",
+    "start": "cross-env NODE_ENV=dev node index.js",
+    "start-prod": "cross-env NODE_ENV=production node index.js",
     "test": "concurrently -s last 'npm:test-app' 'npm:tape'"
   },
   "repository": {
@@ -21,7 +22,10 @@
   },
   "homepage": "https://github.com/500tech/node-class#readme",
   "dependencies": {
+    "cross-env": "^5.2.0",
+    "dotenv": "^8.0.0",
     "express": "^4.17.1",
+    "lodash": "^4.17.11",
     "morgan": "^1.9.1",
     "pug": "^2.0.4"
   },
