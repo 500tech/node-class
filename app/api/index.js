@@ -14,5 +14,6 @@ api.get("/", (_req, res) => {
 });
 
 api.use('/posts', require('./posts'));
+api.use('/auth', require('./auth'));
 
 module.exports = api;

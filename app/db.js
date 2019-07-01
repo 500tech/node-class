@@ -8,7 +8,8 @@ if (env.nodeEnv) {
     path.resolve(__dirname, "..", `db.${env.nodeEnv}.json`)
   );
   const db = low(adapter).defaults({
-    posts: []
+    posts: [],
+    users: [],
   });
 
   module.exports = db;
