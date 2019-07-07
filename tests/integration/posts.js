@@ -76,7 +76,7 @@ test("Get post by id", async t => {
 
 test("Get non existent post by id", async t => {
   try {
-    await app.api.posts.nope.get();
+    await app.api.posts.nope1.get();
   } catch (err) {
     t.equals(err.code, 404);
   }

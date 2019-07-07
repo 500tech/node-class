@@ -1,4 +1,5 @@
-const proxyquire = require("proxyquire");
+const proxyquire = require("proxyquire").noCallThru();
+const sinon = require("sinon");
 const { unit } = require("../utils");
 
 const db = proxyquire("../../app/db", {
@@ -8,35 +9,56 @@ const db = proxyquire("../../app/db", {
   }
 });
 
+const cache = {
+  get: sinon.stub(),
+  set: sinon.stub()
+};
+
 const postsService = proxyquire("../../app/api/posts/service", {
-  "../../db": db
+  "../../cache": cache,
+  "../../db": db,
 });
 
-const reset = () => db.set(postsService.COLLECTION, []).write();
+const reset = () => {
+  cache.set.reset();
+  cache.get.reset();
+  db.set(postsService.COLLECTION, []).write();
+};
 
-unit("findPostById", t => {
+unit("findPostById (uncached)", async t => {
   reset();
+  cache.get.resolves(null);
+  cache.set.resolves();
   const post = { $id: "foo", title: "fdfd", body: "fsdfsd" };
-  const p1 = postsService.findPostById("foo");
+  const p1 = await postsService.findPostById("foo");
   t.equals(p1, undefined);
   db.get(postsService.COLLECTION)
     .push(post)
     .write();
-  const p2 = postsService.findPostById("foo");
+  const p2 = await postsService.findPostById("foo");
   t.deepEqual(p2, post);
 });
 
-unit("getAllPosts", t => {
+unit("findPostById (cached)", async t => {
   reset();
-  t.equals(postsService.getAllPosts().length, 0);
+  const post = { $id: "foo", title: "fdfd", body: "fsdfsd" };
+  cache.get.resolves(JSON.stringify(post));
+  cache.set.rejects();
+  const p1 = await postsService.findPostById("foo");
+  t.deepEqual(p1, post);
+});
+
+unit("getAllPosts", async t => {
+  reset();
+  t.equals((await postsService.getAllPosts()).length, 0);
   const post = { $id: "foo", title: "fdfd", body: "fsdfsd" };
   db.get(postsService.COLLECTION)
     .push(post)
     .write();
-  t.equals(postsService.getAllPosts().length, 1);
+  t.equals((await postsService.getAllPosts()).length, 1);
 });
 
-unit("createPost", t => {
+unit("createPost", async t => {
   reset();
   t.equals(
     db
@@ -45,7 +67,7 @@ unit("createPost", t => {
       .value(),
     0
   );
-  const post = postsService.createPost({ title: "title" });
+  const post = await postsService.createPost({ title: "title" });
   t.equals(post.title, "title");
   t.equals(
     db
