@@ -2,9 +2,9 @@ const proxyquire = require("proxyquire").noCallThru();
 const sinon = require("sinon");
 const { unit } = require("../utils");
 
-const db = proxyquire("../../app/db", {
+const db = proxyquire("@services/db", {
   "lowdb/adapters/FileSync": require("lowdb/adapters/Memory"),
-  "../env": {
+  "@root/env": {
     nodeEnv: "unit"
   }
 });
@@ -14,9 +14,9 @@ const cache = {
   set: sinon.stub()
 };
 
-const postsService = proxyquire("../../app/api/posts/service", {
-  "../../cache": cache,
-  "../../db": db,
+const postsService = proxyquire("@services/posts", {
+  "@services/cache": cache,
+  "@services/db": db,
 });
 
 const reset = () => {

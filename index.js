@@ -1,5 +1,6 @@
-const env = require("./env");
-const app = require("./app");
+require("module-alias/register");
+const env = require("@root/env");
+const app = require("@app");
 
 app.listen(+env.port, () => {
   if (!env.silent) {

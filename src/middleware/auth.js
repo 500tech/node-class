@@ -1,5 +1,5 @@
 const { UNAUTHORIZED } = require("http-status-codes");
-const { validateUserToken } = require("../api/auth/service");
+const { validateUserToken } = require("@services/auth");
 
 module.exports = function authenticate(req, _res, next) {
   const { authorization: token } = req.headers;

@@ -1,7 +1,7 @@
 const uuid = require("uuid");
 const sleep = require("sleep-promise");
-const db = require("../../db");
-const cache = require("../../cache");
+const db = require("@services/db");
+const cache = require("@services/cache");
 
 const COLLECTION = "posts";
 

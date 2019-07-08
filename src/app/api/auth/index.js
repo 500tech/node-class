@@ -1,8 +1,8 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { CREATED, NOT_FOUND } = require("http-status-codes");
-const validate = require("../../middleware/validate");
-const { createUser, getUserToken } = require("./service");
+const validate = require("@mw/validate");
+const { createUser, getUserToken } = require("@services/auth");
 
 const auth = Router();
 
@@ -14,8 +14,8 @@ auth.post(
       .isString()
       .isLength({ min: 8 })
   ]),
-  (req, res) => {
-    createUser(req.body);
+  async (req, res) => {
+    await createUser(req.body);
     return res.status(CREATED).end();
   }
 );
@@ -28,8 +28,8 @@ auth.post(
       .isString()
       .isLength({ min: 8 })
   ]),
-  (req, res) => {
-    const token = getUserToken(req.body);
+  async (req, res) => {
+    const token = await getUserToken(req.body);
     if (!token) {
       throw NOT_FOUND;
     }

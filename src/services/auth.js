@@ -1,8 +1,8 @@
 const uuid = require("uuid");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const db = require("../../db");
-const { jwtSecret, jwtExpires = "60d" } = require("../../../env");
+const db = require("@services/db");
+const { jwtSecret, jwtExpires = "60d" } = require("@root/env");
 
 const COLLECTION = "users";
 
@@ -19,7 +19,7 @@ function hashPassword(password) {
   return hash;
 }
 
-function getUserToken({ email, password }) {
+async function getUserToken({ email, password }) {
   const user = db
     .get(COLLECTION)
     .find(
@@ -33,7 +33,7 @@ function getUserToken({ email, password }) {
   }
 }
 
-function createUser({ email, password }) {
+async function createUser({ email, password }) {
   const $id = uuid();
   const hashedPassword = hashPassword(password);
   db.get(COLLECTION)

@@ -1,9 +1,9 @@
 const { check } = require("express-validator");
 const { Router } = require("express");
 const { NOT_FOUND } = require("http-status-codes");
-const { findPostById, getAllPosts, createPost } = require("./service");
-const validate = require("../../middleware/validate");
-const authenticate = require("../../middleware/auth");
+const { findPostById, getAllPosts, createPost } = require("@services/posts");
+const validate = require("@mw/validate");
+const authenticate = require("@mw/auth");
 
 const posts = Router();
 

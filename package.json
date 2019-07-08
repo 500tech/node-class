@@ -3,9 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "_moduleAliases": {
+    "@root": ".",
+    "@services": "src/services",
+    "@app": "src/app",
+    "@mw": "src/middleware"
+  },
   "scripts": {
     "tape-integration": "rimraf db.test.json && tape tests/integration/**/*.js;fkill -s :4000",
-    "test-unit": "nyc --silent tape tests/unit/**/*.js",
+    "test-unit": "nyc --silent tape -r module-alias/register tests/unit/**/*.js",
     "test-app": "node index.js",
     "start-test": "nyc --no-clean --silent npm run test-app",
     "start": "cross-env NODE_ENV=dev nodemon index.js",
@@ -37,6 +43,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
     "lowdb": "^1.0.0",
+    "module-alias": "^2.2.0",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.1",
     "proxyquire": "^2.1.0",
